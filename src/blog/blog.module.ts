@@ -6,7 +6,6 @@ import { SharedModule } from '../shared/shared.module';
 @Module({
   controllers: [BlogPostsController],
   providers: [BlogPostService],
-  exports: [BlogPostService],
   imports: [SharedModule],
 })
 export class BlogModule {}
