@@ -1,4 +1,4 @@
-import { Controller, Req, Res, Get, Post, Body, HttpStatus } from '@nestjs/common';
+import { Controller, Req, Res, Get, Post, Body, HttpStatus, Param } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BlogPostService } from '../blog-post-service';
 import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
@@ -15,8 +15,20 @@ export class BlogPostsController {
   }
 
   @Post()
-  async createBlogPost(@Req() req: Request, @Res() res: Response, @Body() newBlogPost: CreateBlogPostModel) {
-    const response: GetBlogPostModel = await this.blogPostService.createBlogPost(newBlogPost);
+  async createBlogPost(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() newBlogPost: CreateBlogPostModel,
+  ) {
+    const response: GetBlogPostModel = await this.blogPostService.createBlogPost(
+      newBlogPost,
+    );
     res.status(HttpStatus.CREATED).json(response);
+  }
+
+  @Get(':id')
+  async getBlogPostById(@Req() req: Request, @Res() res: Response, @Param('id') blogPostId: string) {
+    const response = await this.blogPostService.getBlogPostById(blogPostId);
+    res.json(response);
   }
 }

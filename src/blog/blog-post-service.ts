@@ -33,4 +33,18 @@ export class BlogPostService {
 
     return newBlogPost;
   }
+
+  async getBlogPostById(blogPostId: string): Promise<GetBlogPostModel> {
+    const databaseResponse = await this.databaseService.getOneByID(
+      BlogPostModel,
+      blogPostId,
+    ) as BlogPostModel;
+
+    const blogPost: GetBlogPostModel = new GetBlogPostModel();
+    blogPost.id = databaseResponse._id;
+    blogPost.title = databaseResponse.title;
+    blogPost.content = databaseResponse.content;
+
+    return blogPost;
+  }
 }

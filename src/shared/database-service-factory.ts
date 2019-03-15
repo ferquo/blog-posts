@@ -19,7 +19,7 @@ export const databaseServiceFactory = async (configManager: ConfigurationService
         database: config.db.database,
         reconnectTries: 3000,
         entities: [
-            __dirname + '/../../../models/database/*.js',
+            __dirname + '/../models/database/*.js',
         ],
     };
 
