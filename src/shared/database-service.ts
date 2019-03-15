@@ -70,7 +70,7 @@ export class DatabaseService {
     return this.connection.getMongoRepository(collection).find(options);
   }
 
-  getOneByID(collection: any, id: ObjectId, query?: object, ord?: object) {
+  getOneByID(collection: any, id: ObjectId | string, query?: object, ord?: object) {
     this.assertConnection();
 
     if (typeof id === 'string') {

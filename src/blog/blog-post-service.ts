@@ -8,4 +8,8 @@ export class BlogPostService {
   async getBlogPosts() {
     return await this.databaseService.get();
   }
+
+  async createBlogPost() {
+    // return this.databaseService.
+  }
 }
