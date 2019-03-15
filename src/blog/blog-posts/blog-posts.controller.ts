@@ -1,6 +1,8 @@
-import { Controller, Req, Res, Get } from '@nestjs/common';
+import { Controller, Req, Res, Get, Post, Body, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BlogPostService } from '../blog-post-service';
+import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
+import { CreateBlogPostModel } from '../../models/viewmodel/create-blog-post-model';
 
 @Controller('blog-posts')
 export class BlogPostsController {
@@ -10,5 +12,11 @@ export class BlogPostsController {
   async getBlogPosts(@Req() req: Request, @Res() res: Response) {
     const response = await this.blogPostService.getBlogPosts();
     res.json(response);
+  }
+
+  @Post()
+  async createBlogPost(@Req() req: Request, @Res() res: Response, @Body() newBlogPost: CreateBlogPostModel) {
+    const response: GetBlogPostModel = await this.blogPostService.createBlogPost(newBlogPost);
+    res.status(HttpStatus.CREATED).json(response);
   }
 }

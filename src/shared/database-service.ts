@@ -18,7 +18,7 @@ export class DatabaseService {
    */
   constructor(private options: ConnectionOptions) {}
 
-  private async connect() {
+  public async connect() {
     try {
       this.connection = await createConnection(this.options);
       console.log('Connected to database');
