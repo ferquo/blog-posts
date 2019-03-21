@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { Operation, applyPatch } from 'fast-json-patch';
 import { DatabaseService } from '../shared/database-service';
 import { BlogPostModel } from '../models/database/blog-post-model';
 import { CreateBlogPostModel } from '../models/viewmodel/create-blog-post-model';
 import { GetBlogPostModel } from '../models/viewmodel/get-blog-post-model';
+import { RecordNotFoundException } from '../shared/exceptions/record-not-found.exception';
 
 @Injectable()
 export class BlogPostService {
@@ -62,11 +64,34 @@ export class BlogPostService {
       blogPostId,
     )) as BlogPostModel;
 
+    if (!databaseResponse) {
+      throw new RecordNotFoundException();
+    }
+
     const blogPost: GetBlogPostModel = new GetBlogPostModel();
     blogPost.id = databaseResponse._id;
     blogPost.title = databaseResponse.title;
     blogPost.content = databaseResponse.content;
 
+    return blogPost;
+  }
+
+  async updateBlogPostByIdPatch(
+    blogPostId: string,
+    operations: Operation[],
+  ): Promise<GetBlogPostModel> {
+    const currentBlogPost: BlogPostModel = (await this.databaseService.getOneByID(
+      BlogPostModel,
+      blogPostId,
+    )) as BlogPostModel;
+
+    if (!currentBlogPost) {
+      throw new RecordNotFoundException();
+    }
+
+    applyPatch(currentBlogPost, operations);
+
+    const blogPost: GetBlogPostModel = new GetBlogPostModel();
     return blogPost;
   }
 }
