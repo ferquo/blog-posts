@@ -70,39 +70,16 @@ export class DatabaseService {
     return this.connection.getMongoRepository(collection).find(options);
   }
 
-  getOneByID(collection: any, id: ObjectId | string, query?: object, ord?: object) {
+  getOneByID(collection: any, id: ObjectId | string) {
     this.assertConnection();
 
     if (typeof id === 'string') {
       id = ObjectId(id);
     }
 
-    ord = ord ? ord : { $natural: 'ASC' };
-
-    const condition: any = {};
-
-    if (query) {
-      Object.keys(query).forEach(key => {
-        if (typeof [query[key]] !== 'object') {
-          condition[key] = new RegExp(query[key].join(''), 'i');
-        } else {
-          condition[key] = query[key];
-        }
-      });
-    }
-
-    condition.deleted = null;
-
-    const options = ({
-      where: {
-        deleted: null,
-      },
-      order: ord,
-    }) as FindManyOptions<any>;
-
     return this.connection
       .getMongoRepository(collection)
-      .findOne(id, condition);
+      .findOne(id);
   }
 
   getOneByIDs(collection: any, ids: Array<ObjectId>) {
@@ -147,14 +124,13 @@ export class DatabaseService {
 
   find(collection: any, condition: any, ord?: object, page?: any) {
     this.assertConnection();
-    condition.deleted = null;
+    condition.deleted = false;
 
     const options: any = {
       where: condition,
       order: [],
     };
-
-    ord = ord ? ord : { updated_date: 'DESC' };
+    ord = ord ? ord : { updatedOnDate: 'DESC' };
     options.order = ord;
 
     if (page) {

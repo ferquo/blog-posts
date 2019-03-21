@@ -8,8 +8,30 @@ import { GetBlogPostModel } from '../models/viewmodel/get-blog-post-model';
 export class BlogPostService {
   constructor(private databaseService: DatabaseService) {}
 
-  async getBlogPosts() {
-    return await this.databaseService.get();
+  async getBlogPosts(query: any): Promise<GetBlogPostModel[]> {
+    const page = query.page || 1;
+    const pageOptions = {
+      take: 5,
+      skip: (page - 1) * 5,
+    };
+    const dbResponse = (await this.databaseService.find(
+      BlogPostModel,
+      {},
+      {},
+      pageOptions,
+    )) as BlogPostModel[];
+
+    const response: GetBlogPostModel[] = [];
+    dbResponse.forEach(element => {
+      const item = new GetBlogPostModel();
+      item.id = element._id;
+      item.title = element.title;
+      item.content = element.content;
+
+      response.push(item);
+    });
+
+    return response;
   }
 
   async createBlogPost(
@@ -35,10 +57,10 @@ export class BlogPostService {
   }
 
   async getBlogPostById(blogPostId: string): Promise<GetBlogPostModel> {
-    const databaseResponse = await this.databaseService.getOneByID(
+    const databaseResponse: BlogPostModel = (await this.databaseService.getOneByID(
       BlogPostModel,
       blogPostId,
-    ) as BlogPostModel;
+    )) as BlogPostModel;
 
     const blogPost: GetBlogPostModel = new GetBlogPostModel();
     blogPost.id = databaseResponse._id;
