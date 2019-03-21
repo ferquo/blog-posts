@@ -1,4 +1,4 @@
-import { Controller, Req, Res, Get, Post, Body, HttpStatus, Param, Query } from '@nestjs/common';
+import { Controller, Req, Res, Get, Post, Body, HttpStatus, Param, Query, Patch } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BlogPostService } from '../blog-post-service';
 import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
@@ -42,6 +42,7 @@ export class BlogPostsController {
     res.json(response);
   }
 
+  @Patch(':id')
   async updateBlogPostByIdPatch(
     @Res() res: Response,
     @Param('id') blogPostId: string,

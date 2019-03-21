@@ -91,6 +91,8 @@ export class BlogPostService {
 
     applyPatch(currentBlogPost, operations);
 
+    // TODO Update the database
+
     const blogPost: GetBlogPostModel = new GetBlogPostModel();
     return blogPost;
   }
