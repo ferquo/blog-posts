@@ -157,6 +157,15 @@ export class DatabaseService {
       .update(id, record);
   }
 
+  async saveRecord(collection: any, record: any): Promise<any>
+  {
+    this.assertConnection();
+
+    return await this.connection
+      .getMongoRepository(collection)
+      .save(record);
+  }
+
   private assertConnection() {
     if (!this.connection) {
       throw new HttpException(

@@ -90,10 +90,17 @@ export class BlogPostService {
     }
 
     applyPatch(currentBlogPost, operations);
-
-    // TODO Update the database
+    currentBlogPost.updatedOnDate = new Date();
+    const updateResponse = (await this.databaseService.saveRecord(
+      BlogPostModel,
+      currentBlogPost,
+    )) as BlogPostModel;
 
     const blogPost: GetBlogPostModel = new GetBlogPostModel();
+    blogPost.id = updateResponse._id;
+    blogPost.title = updateResponse.title;
+    blogPost.content = updateResponse.content;
+
     return blogPost;
   }
 }
