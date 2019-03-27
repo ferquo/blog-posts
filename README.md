@@ -32,6 +32,10 @@ $ npm run test
 
 It is recommended to open this project using [Visual Studio Code](https://code.visualstudio.com/). Debugging is configured for the application, after installing the dependencies, you can debug it in VS Code by pressing F5.
 
+It is also recommended to install the following extensions for VS Code:
+* [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest) for code completion with documentation and other quality of life improvements
+* [Jest Runner](https://marketplace.visualstudio.com/items?itemName=firsttris.vscode-jest-runner) for debugging test (tests can be debugged individually), and marks each test with result
+
 ## Stay in touch
 
 - Author - [Ferenc Pato](http://ferenc-pato.ro/)
