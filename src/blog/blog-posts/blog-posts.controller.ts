@@ -23,7 +23,6 @@ export class BlogPostsController {
 
   @Post()
   async createBlogPost(
-    @Req() req: Request,
     @Res() res: Response,
     @Body() newBlogPost: CreateBlogPostModel,
   ) {
