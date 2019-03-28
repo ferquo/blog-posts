@@ -5,6 +5,8 @@ import { BlogPostModel } from '../models/database/blog-post-model';
 import { CreateBlogPostModel } from '../models/viewmodel/create-blog-post-model';
 import { GetBlogPostModel } from '../models/viewmodel/get-blog-post-model';
 import { RecordNotFoundException } from '../shared/exceptions/record-not-found.exception';
+import { validate, ValidationError, ValidateNested } from 'class-validator';
+import { ValidationErrorException } from '../shared/exceptions/validation-error.exception';
 
 @Injectable()
 export class BlogPostService {
@@ -39,15 +41,17 @@ export class BlogPostService {
   async createBlogPost(
     blogPost: CreateBlogPostModel,
   ): Promise<GetBlogPostModel> {
-    const blogpostDataModel = new BlogPostModel();
-    blogpostDataModel.title = blogPost.title;
-    blogpostDataModel.content = blogPost.content;
-    blogpostDataModel.createdOnDate = blogpostDataModel.updatedOnDate = new Date();
-    blogpostDataModel.deleted = false;
+    const blogPostDB = new BlogPostModel();
+    blogPostDB.title = blogPost.title;
+    blogPostDB.content = blogPost.content;
+    blogPostDB.createdOnDate = blogPostDB.updatedOnDate = new Date();
+    blogPostDB.deleted = false;
+
+    await this.validateModel(blogPostDB);
 
     const databaseResponse = await this.databaseService.add(
       BlogPostModel,
-      blogpostDataModel,
+      blogPostDB,
     );
 
     const newBlogPost: GetBlogPostModel = new GetBlogPostModel();
@@ -91,6 +95,9 @@ export class BlogPostService {
 
     applyPatch(currentBlogPost, operations);
     currentBlogPost.updatedOnDate = new Date();
+
+    await this.validateModel(currentBlogPost);
+
     const updateResponse = (await this.databaseService.saveRecord(
       BlogPostModel,
       currentBlogPost,
@@ -102,5 +109,24 @@ export class BlogPostService {
     blogPost.content = updateResponse.content;
 
     return blogPost;
+  }
+
+  private async validateModel(blogPost: BlogPostModel) {
+    const errors = await validate(blogPost);
+    if (errors && errors.length > 0) {
+      const errorMessage = this.getMessageFromValidationErrors(errors);
+      throw new ValidationErrorException(errorMessage);
+    }
+  }
+
+  private getMessageFromValidationErrors(errors: ValidationError[]) {
+    let errorMessage = '';
+    errors.forEach(error => {
+      Object.values(error.constraints).forEach(value => {
+        errorMessage += value;
+      });
+    });
+
+    return errorMessage.trim();
   }
 }

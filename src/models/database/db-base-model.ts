@@ -1,6 +1,6 @@
 import { ObjectIdColumn, Column } from 'typeorm';
 import {
-    IsDateString, IsOptional,
+    IsOptional, IsDate,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
 
@@ -10,11 +10,11 @@ export class DbBaseModel {
     _id?: ObjectId;
 
     @Column()
-    @IsDateString()
+    @IsDate()
     createdOnDate: Date;
 
     @Column()
-    @IsDateString()
+    @IsDate()
     updatedOnDate: Date;
 
     @Column()
@@ -22,6 +22,7 @@ export class DbBaseModel {
     deleted?: boolean;
 
     @Column()
-    @IsDateString()
+    @IsOptional()
+    @IsDate()
     deletedOnDate?: Date;
 }
