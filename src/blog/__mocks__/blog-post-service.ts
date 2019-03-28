@@ -11,7 +11,12 @@ export class BlogPostService {
     async createBlogPost(
         blogPost: CreateBlogPostModel,
     ): Promise<GetBlogPostModel> {
-        return new GetBlogPostModel();
+        const newBlogPost = new GetBlogPostModel();
+        newBlogPost.id = 'new_id';
+        newBlogPost.title = blogPost.title;
+        newBlogPost.content = blogPost.content;
+
+        return newBlogPost;
     }
 
     async getBlogPostById(blogPostId: string): Promise<GetBlogPostModel> {
