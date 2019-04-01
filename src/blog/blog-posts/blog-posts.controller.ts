@@ -1,4 +1,4 @@
-import { Controller, Req, Res, Get, Post, Body, HttpStatus, Param, Query, Patch } from '@nestjs/common';
+import { Controller, Req, Res, Get, Post, Body, HttpStatus, Param, Query, Patch, Delete } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BlogPostService } from '../blog-post-service';
 import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
@@ -33,10 +33,7 @@ export class BlogPostsController {
   }
 
   @Get(':id')
-  async getBlogPostById(
-    @Res() res: Response,
-    @Param('id') blogPostId: string,
-  ) {
+  async getBlogPostById(@Res() res: Response, @Param('id') blogPostId: string) {
     const response = await this.blogPostService.getBlogPostById(blogPostId);
     res.json(response);
   }
@@ -52,5 +49,14 @@ export class BlogPostsController {
       jsonPatchOperations,
     );
     res.json(response);
+  }
+
+  @Delete(':id')
+  async deleteBlogPostById(
+    @Res() res: Response,
+    @Param('id') blogPostId: string,
+  ) {
+    await this.blogPostService.deleteBlogPostById(blogPostId);
+    res.status(HttpStatus.NO_CONTENT).send();
   }
 }

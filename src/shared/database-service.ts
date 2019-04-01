@@ -79,19 +79,19 @@ export class DatabaseService {
 
     return this.connection
       .getMongoRepository(collection)
-      .findOne(id);
+      .findOne({ _id: id, deleted: false });
   }
 
   getOneByIDs(collection: any, ids: Array<ObjectId>) {
     this.assertConnection();
-    const options = ({
+    const options = {
       where: {
         deleted: null,
       },
       order: {
         updated_date: 'DESC',
       },
-    }) as FindManyOptions<any>;
+    } as FindManyOptions<any>;
 
     return this.connection
       .getMongoRepository(collection)
@@ -102,12 +102,12 @@ export class DatabaseService {
     this.assertConnection();
     condition.deleted = null;
 
-    const options = ({
+    const options = {
       where: condition,
       order: {
         updated_date: 'DESC',
       },
-    }) as FindManyOptions<any>;
+    } as FindManyOptions<any>;
 
     return this.connection.getMongoRepository(collection).findOne(options);
   }
@@ -157,13 +157,10 @@ export class DatabaseService {
       .update(id, record);
   }
 
-  async saveRecord(collection: any, record: any): Promise<any>
-  {
+  async saveRecord(collection: any, record: any): Promise<any> {
     this.assertConnection();
 
-    return await this.connection
-      .getMongoRepository(collection)
-      .save(record);
+    return await this.connection.getMongoRepository(collection).save(record);
   }
 
   private assertConnection() {

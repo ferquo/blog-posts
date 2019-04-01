@@ -18,6 +18,7 @@ export class BlogPostService {
       take: 5,
       skip: (page - 1) * 5,
     };
+
     const dbResponse = (await this.databaseService.find(
       BlogPostModel,
       {},
@@ -109,6 +110,25 @@ export class BlogPostService {
     blogPost.content = updateResponse.content;
 
     return blogPost;
+  }
+
+  async deleteBlogPostById(blogPostId: string) {
+    const currentBlogPost: BlogPostModel = (await this.databaseService.getOneByID(
+      BlogPostModel,
+      blogPostId,
+    )) as BlogPostModel;
+
+    if (!currentBlogPost) {
+      throw new RecordNotFoundException();
+    }
+
+    currentBlogPost.deleted = true;
+    currentBlogPost.deletedOnDate = currentBlogPost.updatedOnDate = new Date();
+
+    await this.databaseService.saveRecord(
+      BlogPostModel,
+      currentBlogPost,
+    );
   }
 
   private async validateModel(blogPost: BlogPostModel) {
