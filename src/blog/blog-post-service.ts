@@ -38,7 +38,9 @@ export class BlogPostService {
         id: element._id,
         title: element.title,
         content: element.content,
+        links: [],
       });
+      item.links.push(new ResourceLinkModel({ rel: 'self', href: `http://${headers.host}/blog-posts/${element._id}` }));
 
       response.blogPosts.push(item);
     });
