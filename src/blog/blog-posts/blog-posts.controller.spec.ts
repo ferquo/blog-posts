@@ -29,10 +29,11 @@ describe('BlogPosts Controller', () => {
   });
 
   it('should get an existing blog post', async () => {
-    const expectedResult = new GetBlogPostModel()
-    expectedResult.id = 'existing-blog-post';
-    expectedResult.title = 'Expected Title';
-    expectedResult.content = 'Expected content';
+    const expectedResult = new GetBlogPostModel({
+      id: 'existing-blog-post',
+      title: 'Expected Title',
+      content: 'Expected content',
+    });
     const res = mockResponse();
 
     await controller.getBlogPostById(res, 'existing-blog-post');
@@ -50,11 +51,15 @@ describe('BlogPosts Controller', () => {
   });
 
   it('should create a blog post', async () => {
-    const newBlogPost = new CreateBlogPostModel();
-    const expectedResult = new GetBlogPostModel();
-    newBlogPost.title = expectedResult.title = 'New title';
-    newBlogPost.content = expectedResult.content = 'New Content';
-    expectedResult.id = 'new_id';
+    const newBlogPost = new CreateBlogPostModel({
+      title: 'New title',
+      content: 'New Content',
+    });
+    const expectedResult = new GetBlogPostModel({
+      id: 'new_id',
+      title: 'New title',
+      content: 'New Content',
+    });
 
     const res = mockResponse();
 
@@ -65,11 +70,9 @@ describe('BlogPosts Controller', () => {
   });
 
   it('should not create a blog post, when title is not specified', async () => {
-    const newBlogPost = new CreateBlogPostModel();
-    const expectedResult = new GetBlogPostModel();
-
-    newBlogPost.content = expectedResult.content = 'New Content';
-    expectedResult.id = 'new_id';
+    const newBlogPost = new CreateBlogPostModel({
+      content: 'New Content',
+    });
 
     const res = mockResponse();
 
@@ -81,12 +84,9 @@ describe('BlogPosts Controller', () => {
   });
 
   it('should not create a blog post, when content is not specified', async () => {
-    const newBlogPost = new CreateBlogPostModel();
-    const expectedResult = new GetBlogPostModel();
-
-    newBlogPost.title = expectedResult.title = 'New title';
-
-    expectedResult.id = 'new_id';
+    const newBlogPost = new CreateBlogPostModel({
+      title: 'New title',
+    });
 
     const res = mockResponse();
 

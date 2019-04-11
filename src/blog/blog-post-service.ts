@@ -34,10 +34,11 @@ export class BlogPostService {
     response.total = total;
 
     dbResponse.forEach(element => {
-      const item = new GetBlogPostModel();
-      item.id = element._id;
-      item.title = element.title;
-      item.content = element.content;
+      const item = new GetBlogPostModel({
+        id: element._id,
+        title: element.title,
+        content: element.content,
+      });
 
       response.blogPosts.push(item);
     });
@@ -50,6 +51,14 @@ export class BlogPostService {
     // Last Page
     const lastPage = Math.ceil(total / 5);
     response.links.push(new ResourceLinkModel({ rel: 'last', href: `http://${headers.host}/blog-posts?page=${lastPage}` }));
+    // Previous Page
+    if (+page > 1) {
+      response.links.push(new ResourceLinkModel({ rel: 'previous', href: `http://${headers.host}/blog-posts?page=${+page - 1}` }));
+    }
+    // Next Page
+    if (+page < lastPage) {
+      response.links.push(new ResourceLinkModel({ rel: 'next', href: `http://${headers.host}/blog-posts?page=${+page + 1}` }));
+    }
 
     return response;
   }
@@ -57,11 +66,14 @@ export class BlogPostService {
   async createBlogPost(
     blogPost: CreateBlogPostModel,
   ): Promise<GetBlogPostModel> {
-    const blogPostDB = new BlogPostModel();
-    blogPostDB.title = blogPost.title;
-    blogPostDB.content = blogPost.content;
-    blogPostDB.createdOnDate = blogPostDB.updatedOnDate = new Date();
-    blogPostDB.deleted = false;
+    const creationDate = new Date();
+    const blogPostDB = new BlogPostModel({
+      title: blogPost.title,
+      content: blogPost.content,
+      createdOnDate: creationDate,
+      updatedOnDate: creationDate,
+      deleted: false,
+    });
 
     await this.validateModel(blogPostDB);
 
@@ -70,10 +82,11 @@ export class BlogPostService {
       blogPostDB,
     );
 
-    const newBlogPost: GetBlogPostModel = new GetBlogPostModel();
-    newBlogPost.id = databaseResponse._id;
-    newBlogPost.title = databaseResponse.title;
-    newBlogPost.content = databaseResponse.content;
+    const newBlogPost: GetBlogPostModel = new GetBlogPostModel({
+      id: databaseResponse._id,
+      title: databaseResponse.title,
+      content: databaseResponse.content,
+    });
 
     return newBlogPost;
   }
@@ -88,10 +101,11 @@ export class BlogPostService {
       throw new RecordNotFoundException();
     }
 
-    const blogPost: GetBlogPostModel = new GetBlogPostModel();
-    blogPost.id = databaseResponse._id;
-    blogPost.title = databaseResponse.title;
-    blogPost.content = databaseResponse.content;
+    const blogPost: GetBlogPostModel = new GetBlogPostModel({
+      id: databaseResponse._id,
+      title: databaseResponse.title,
+      content: databaseResponse.content,
+    });
 
     return blogPost;
   }
@@ -119,10 +133,11 @@ export class BlogPostService {
       currentBlogPost,
     )) as BlogPostModel;
 
-    const blogPost: GetBlogPostModel = new GetBlogPostModel();
-    blogPost.id = updateResponse._id;
-    blogPost.title = updateResponse.title;
-    blogPost.content = updateResponse.content;
+    const blogPost: GetBlogPostModel = new GetBlogPostModel({
+      id: updateResponse._id,
+      title: updateResponse.title,
+      content: updateResponse.content,
+    });
 
     return blogPost;
   }

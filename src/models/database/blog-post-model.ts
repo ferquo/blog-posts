@@ -21,4 +21,9 @@ export class BlogPostModel extends DbBaseModel {
     message: 'Content not specified.',
   })
   content: string;
+
+  public constructor(init?: Partial<BlogPostModel>) {
+    super();
+    Object.assign(this, init);
+  }
 }
