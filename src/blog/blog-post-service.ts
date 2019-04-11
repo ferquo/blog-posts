@@ -93,7 +93,7 @@ export class BlogPostService {
     return newBlogPost;
   }
 
-  async getBlogPostById(blogPostId: string): Promise<GetBlogPostModel> {
+  async getBlogPostById(blogPostId: string, headers: any): Promise<GetBlogPostModel> {
     const databaseResponse: BlogPostModel = (await this.databaseService.getOneByID(
       BlogPostModel,
       blogPostId,
@@ -107,7 +107,10 @@ export class BlogPostService {
       id: databaseResponse._id,
       title: databaseResponse.title,
       content: databaseResponse.content,
+      links: [],
     });
+    blogPost.links.push(new ResourceLinkModel({ rel: 'self', href: `http://${headers.host}/blog-posts/${databaseResponse._id}` }));
+    blogPost.links.push(new ResourceLinkModel({ rel: 'list', href: `http://${headers.host}/blog-posts/` }));
 
     return blogPost;
   }

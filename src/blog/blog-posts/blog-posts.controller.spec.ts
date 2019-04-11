@@ -13,6 +13,7 @@ jest.mock('../blog-post-service');
 describe('BlogPosts Controller', () => {
   let controller: BlogPostsController;
   let blogPostService: BlogPostService;
+  const headers = { host: 'localhost:3333' };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,7 +22,7 @@ describe('BlogPosts Controller', () => {
     }).compile();
 
     controller = module.get<BlogPostsController>(BlogPostsController);
-    blogPostService = module.get<BlogPostService>(BlogPostService);;
+    blogPostService = module.get<BlogPostService>(BlogPostService);
   });
 
   it('should be defined', () => {
@@ -36,7 +37,7 @@ describe('BlogPosts Controller', () => {
     });
     const res = mockResponse();
 
-    await controller.getBlogPostById(res, 'existing-blog-post');
+    await controller.getBlogPostById(res, 'existing-blog-post', headers);
 
     expect(res.json).toHaveBeenCalled();
     expect(res.json).toBeCalledWith(expectedResult);
@@ -46,7 +47,7 @@ describe('BlogPosts Controller', () => {
     const res = mockResponse();
 
     expect(
-      controller.getBlogPostById(res, 'not-existing-blog-post'),
+      controller.getBlogPostById(res, 'not-existing-blog-post', headers),
     ).rejects.toThrowError(NotFoundException);
   });
 

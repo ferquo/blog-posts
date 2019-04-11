@@ -33,8 +33,12 @@ export class BlogPostsController {
   }
 
   @Get(':id')
-  async getBlogPostById(@Res() res: Response, @Param('id') blogPostId: string) {
-    const response = await this.blogPostService.getBlogPostById(blogPostId);
+  async getBlogPostById(
+    @Res() res: Response,
+    @Param('id') blogPostId: string,
+    @Headers() headers: any,
+  ) {
+    const response = await this.blogPostService.getBlogPostById(blogPostId, headers);
     res.json(response);
   }
 
