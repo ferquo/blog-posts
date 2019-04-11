@@ -37,7 +37,7 @@ export class DatabaseService {
     return await this.connection.getMongoRepository(collection).save(record);
   }
 
-  getAll(collection: any, query: any = {}, ord?: object, page?: any) {
+  async getAll(collection: any, query: any = {}, ord?: object, page?: any) {
     this.assertConnection();
 
     const condition: any = {};
@@ -70,7 +70,7 @@ export class DatabaseService {
     return this.connection.getMongoRepository(collection).find(options);
   }
 
-  getOneByID(collection: any, id: ObjectId | string) {
+  async getOneByID(collection: any, id: ObjectId | string) {
     this.assertConnection();
 
     if (typeof id === 'string') {
@@ -82,7 +82,7 @@ export class DatabaseService {
       .findOne({ _id: id, deleted: false });
   }
 
-  getOneByIDs(collection: any, ids: Array<ObjectId>) {
+  async getOneByIDs(collection: any, ids: ObjectId[]) {
     this.assertConnection();
     const options = {
       where: {
@@ -98,7 +98,7 @@ export class DatabaseService {
       .findByIds(ids, options);
   }
 
-  getOne(collection: any, condition: any) {
+  async getOne(collection: any, condition: any) {
     this.assertConnection();
     condition.deleted = null;
 
@@ -112,7 +112,7 @@ export class DatabaseService {
     return this.connection.getMongoRepository(collection).findOne(options);
   }
 
-  removeById(collection: any, objectId: any) {
+  async removeById(collection: any, objectId: any) {
     this.assertConnection();
 
     if (typeof objectId === 'string') {
@@ -122,7 +122,7 @@ export class DatabaseService {
     return this.connection.getMongoRepository(collection).delete(objectId);
   }
 
-  find(collection: any, condition: any, ord?: object, page?: any) {
+  async find(collection: any, condition: any, ord?: object, page?: any) {
     this.assertConnection();
     condition.deleted = false;
 
@@ -139,6 +139,12 @@ export class DatabaseService {
     }
 
     return this.connection.getMongoRepository(collection).find(options);
+  }
+
+  async getTotal(collection: any) {
+    this.assertConnection();
+
+    return this.connection.getMongoRepository(collection).count({ deleted: false });
   }
 
   async updateById(collection: any, id: ObjectId, record: any): Promise<any> {

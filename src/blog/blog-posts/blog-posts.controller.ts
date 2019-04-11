@@ -17,7 +17,7 @@ export class BlogPostsController {
   ) {
     const response = await this.blogPostService.getBlogPosts(query);
     const responseStatusCode =
-      response.length > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+      response.blogPosts.length > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT;
     res.status(responseStatusCode).json(response);
   }
 

@@ -7,12 +7,13 @@ import { GetBlogPostModel } from '../models/viewmodel/get-blog-post-model';
 import { RecordNotFoundException } from '../shared/exceptions/record-not-found.exception';
 import { validate, ValidationError, ValidateNested } from 'class-validator';
 import { ValidationErrorException } from '../shared/exceptions/validation-error.exception';
+import { GetBlogPostsListModel } from '../models/viewmodel/get-blog-posts-list-model';
 
 @Injectable()
 export class BlogPostService {
   constructor(private databaseService: DatabaseService) {}
 
-  async getBlogPosts(query: any): Promise<GetBlogPostModel[]> {
+  async getBlogPosts(query: any): Promise<GetBlogPostsListModel> {
     const page = query.page || 1;
     const pageOptions = {
       take: 5,
@@ -26,14 +27,18 @@ export class BlogPostService {
       pageOptions,
     )) as BlogPostModel[];
 
-    const response: GetBlogPostModel[] = [];
+    const response = new GetBlogPostsListModel();
+
+    const total = await this.databaseService.getTotal(BlogPostModel);
+    response.total = total;
+
     dbResponse.forEach(element => {
       const item = new GetBlogPostModel();
       item.id = element._id;
       item.title = element.title;
       item.content = element.content;
 
-      response.push(item);
+      response.blogPosts.push(item);
     });
 
     return response;
