@@ -8,12 +8,13 @@ import { RecordNotFoundException } from '../shared/exceptions/record-not-found.e
 import { validate, ValidationError, ValidateNested } from 'class-validator';
 import { ValidationErrorException } from '../shared/exceptions/validation-error.exception';
 import { GetBlogPostsListModel } from '../models/viewmodel/get-blog-posts-list-model';
+import { ResourceLinkModel } from '../models/viewmodel/resource-link-model';
 
 @Injectable()
 export class BlogPostService {
   constructor(private databaseService: DatabaseService) {}
 
-  async getBlogPosts(query: any): Promise<GetBlogPostsListModel> {
+  async getBlogPosts(query: any, headers: any): Promise<GetBlogPostsListModel> {
     const page = query.page || 1;
     const pageOptions = {
       take: 5,
@@ -40,6 +41,15 @@ export class BlogPostService {
 
       response.blogPosts.push(item);
     });
+
+    // Add resource links
+    // First Page
+    response.links.push(new ResourceLinkModel({ rel: 'first', href: `http://${headers.host}/blog-posts` }));
+    // Self
+    response.links.push(new ResourceLinkModel({ rel: 'self', href: `http://${headers.host}/blog-posts?page=${page}` }));
+    // Last Page
+    const lastPage = Math.ceil(total / 5);
+    response.links.push(new ResourceLinkModel({ rel: 'last', href: `http://${headers.host}/blog-posts?page=${lastPage}` }));
 
     return response;
   }

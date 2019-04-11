@@ -1,4 +1,4 @@
-import { Controller, Req, Res, Get, Post, Body, HttpStatus, Param, Query, Patch, Delete } from '@nestjs/common';
+import { Controller, Req, Res, Get, Post, Body, HttpStatus, Param, Query, Patch, Delete, Headers } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BlogPostService } from '../blog-post-service';
 import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
@@ -11,14 +11,14 @@ export class BlogPostsController {
 
   @Get()
   async getBlogPosts(
-    @Req() req: Request,
     @Res() res: Response,
     @Query() query: any,
+    @Headers() headers: any,
   ) {
-    const response = await this.blogPostService.getBlogPosts(query);
+    const response = await this.blogPostService.getBlogPosts(query, headers);
     const responseStatusCode =
       response.blogPosts.length > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT;
-    res.status(responseStatusCode).json(response);
+    res.set('x-total-count', `${response.total}`).status(responseStatusCode).json(response);
   }
 
   @Post()
