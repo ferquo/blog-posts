@@ -5,17 +5,20 @@ import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
 import { NotFoundException } from '@nestjs/common';
 import { CreateBlogPostModel } from '../../models/viewmodel/create-blog-post-model';
 import { ValidationErrorException } from '../../shared/exceptions/validation-error.exception';
+import { RecordNotFoundException } from '../../shared/exceptions/record-not-found.exception';
 // tslint:disable-next-line: no-var-requires
 const mockResponse = require('jest-mock-express').response;
 
 jest.mock('../blog-post-service');
 
-describe('BlogPosts Controller', () => {
+describe('BlogPosts Controller', () =>
+{
   let controller: BlogPostsController;
   let blogPostService: BlogPostService;
   const headers = { host: 'localhost:3333' };
 
-  beforeEach(async () => {
+  beforeEach(async () =>
+  {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BlogPostsController],
       providers: [BlogPostService],
@@ -25,12 +28,15 @@ describe('BlogPosts Controller', () => {
     blogPostService = module.get<BlogPostService>(BlogPostService);
   });
 
-  it('should be defined', () => {
+  it('should be defined', () =>
+  {
     expect(controller).toBeDefined();
   });
 
-  describe('GET getBlogPostById', () => {
-    it('should get an existing blog post', async () => {
+  describe('GET getBlogPostById', () =>
+  {
+    it('should get an existing blog post', async () =>
+    {
       const expectedResult = new GetBlogPostModel({
         id: 'existing-blog-post',
         title: 'Expected Title',
@@ -44,7 +50,8 @@ describe('BlogPosts Controller', () => {
       expect(res.json).toBeCalledWith(expectedResult);
     });
 
-    it('should fail on requesting an unexisting blog post', async () => {
+    it('should fail on requesting an unexisting blog post', async () =>
+    {
       const res = mockResponse();
 
       expect(
@@ -53,7 +60,8 @@ describe('BlogPosts Controller', () => {
     });
   });
 
-  describe('POST createBlogPost', () => {
+  describe('POST createBlogPost', () =>
+  {
     it('should create a blog post', async () => {
       const newBlogPost = new CreateBlogPostModel({
         title: 'New title',
@@ -99,6 +107,31 @@ describe('BlogPosts Controller', () => {
       );
 
       expect(res.json).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('DELETE deleteBlogPostById', () => {
+    it('should remove an existing blog post', async () => {
+      const blogPostId = 'existing-blog-post';
+
+      const res = mockResponse();
+
+      await controller.deleteBlogPostById(res, blogPostId);
+
+      expect(res.send).toHaveBeenCalled();
+      expect(res.status).toBeCalledWith(204);
+    });
+
+    it('should throw error when trying to remove a non existing blog post', async () => {
+      const blogPostId = 'non-existing-blog-post';
+
+      const res = mockResponse();
+
+      expect(
+        controller.deleteBlogPostById(res, blogPostId),
+      ).rejects.toThrowError(RecordNotFoundException);
+
+      expect(res.send).not.toHaveBeenCalled();
     });
   });
 });

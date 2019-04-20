@@ -5,6 +5,7 @@ import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
 import { BlogPostModel } from '../../models/database/blog-post-model';
 import { validate } from 'class-validator';
 import { ValidationErrorException } from '../../shared/exceptions/validation-error.exception';
+import { RecordNotFoundException } from '../../shared/exceptions/record-not-found.exception';
 
 export class BlogPostService {
     async getBlogPosts(query: any): Promise<GetBlogPostModel[]> {
@@ -52,5 +53,13 @@ export class BlogPostService {
         operations: Operation[],
     ): Promise<GetBlogPostModel> {
         return new GetBlogPostModel();
+    }
+
+    async deleteBlogPostById(blogPostId: string) {
+        if (blogPostId === 'existing-blog-post') {
+            Promise.resolve({});
+        } else {
+            throw new RecordNotFoundException();
+        }
     }
 }
