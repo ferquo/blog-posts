@@ -12,14 +12,12 @@ const mockResponse = require('jest-mock-express').response;
 
 jest.mock('../blog-post-service');
 
-describe('BlogPosts Controller', () =>
-{
+describe('BlogPosts Controller', () => {
   let controller: BlogPostsController;
   let blogPostService: BlogPostService;
   const headers = { host: 'localhost:3333' };
 
-  beforeEach(async () =>
-  {
+  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BlogPostsController],
       providers: [BlogPostService],
@@ -29,15 +27,12 @@ describe('BlogPosts Controller', () =>
     blogPostService = module.get<BlogPostService>(BlogPostService);
   });
 
-  it('should be defined', () =>
-  {
+  it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('GET getBlogPostById', () =>
-  {
-    it('should get an existing blog post', async () =>
-    {
+  describe('GET getBlogPostById', () => {
+    it('should get an existing blog post', async () => {
       const expectedResult = new GetBlogPostModel({
         id: 'existing-blog-post',
         title: 'Expected Title',
@@ -51,8 +46,7 @@ describe('BlogPosts Controller', () =>
       expect(res.json).toBeCalledWith(expectedResult);
     });
 
-    it('should fail on requesting an unexisting blog post', async () =>
-    {
+    it('should fail on requesting an unexisting blog post', async () => {
       const res = mockResponse();
 
       expect(
@@ -61,8 +55,7 @@ describe('BlogPosts Controller', () =>
     });
   });
 
-  describe('POST createBlogPost', () =>
-  {
+  describe('POST createBlogPost', () => {
     it('should create a blog post', async () => {
       const newBlogPost = new CreateBlogPostModel({
         title: 'New title',
@@ -172,11 +165,7 @@ describe('BlogPosts Controller', () =>
       const res = mockResponse();
 
       expect(
-        controller.updateBlogPostByIdPatch(
-          res,
-          blogPostId,
-          updateOperations,
-        ),
+        controller.updateBlogPostByIdPatch(res, blogPostId, updateOperations),
       ).rejects.toThrowError(ValidationErrorException);
 
       expect(res.status).not.toHaveBeenCalled();
@@ -192,11 +181,7 @@ describe('BlogPosts Controller', () =>
       const res = mockResponse();
 
       expect(
-        controller.updateBlogPostByIdPatch(
-          res,
-          blogPostId,
-          updateOperations,
-        ),
+        controller.updateBlogPostByIdPatch(res, blogPostId, updateOperations),
       ).rejects.toThrowError(ValidationErrorException);
 
       expect(res.status).not.toHaveBeenCalled();
@@ -212,11 +197,7 @@ describe('BlogPosts Controller', () =>
       const res = mockResponse();
 
       expect(
-        controller.updateBlogPostByIdPatch(
-          res,
-          blogPostId,
-          updateOperations,
-        ),
+        controller.updateBlogPostByIdPatch(res, blogPostId, updateOperations),
       ).rejects.toThrowError(RecordNotFoundException);
 
       expect(res.status).not.toHaveBeenCalled();
