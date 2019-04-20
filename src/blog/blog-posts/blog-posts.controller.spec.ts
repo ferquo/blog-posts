@@ -6,6 +6,7 @@ import { NotFoundException } from '@nestjs/common';
 import { CreateBlogPostModel } from '../../models/viewmodel/create-blog-post-model';
 import { ValidationErrorException } from '../../shared/exceptions/validation-error.exception';
 import { RecordNotFoundException } from '../../shared/exceptions/record-not-found.exception';
+import { Operation } from 'fast-json-patch';
 // tslint:disable-next-line: no-var-requires
 const mockResponse = require('jest-mock-express').response;
 
@@ -132,6 +133,34 @@ describe('BlogPosts Controller', () =>
       ).rejects.toThrowError(RecordNotFoundException);
 
       expect(res.send).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('PATCH updateBlogPostByIdPatch', () => {
+    it('should update a blog post', async () => {
+      const blogPostId = 'existing-blog-post';
+      const updateOperations: Operation[] = [
+        { op: 'replace', path: '/title', value: 'Updated Title' },
+        { op: 'replace', path: '/content', value: 'Updated Content' },
+      ];
+      const expectedResult = new GetBlogPostModel({
+        id: 'existing-blog-post',
+        title: 'Updated Title',
+        content: 'Updated Content',
+      });
+
+      const res = mockResponse();
+
+      await controller.updateBlogPostByIdPatch(
+        res,
+        blogPostId,
+        updateOperations,
+      );
+
+      expect(res.status).toHaveBeenCalled();
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toHaveBeenCalled();
+      expect(res.json).toBeCalledWith(expectedResult);
     });
   });
 });

@@ -52,7 +52,7 @@ export class BlogPostsController {
       blogPostId,
       jsonPatchOperations,
     );
-    res.json(response);
+    res.status(HttpStatus.OK).json(response);
   }
 
   @Delete(':id')

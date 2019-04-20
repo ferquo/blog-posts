@@ -1,4 +1,4 @@
-import { Operation } from 'fast-json-patch';
+import { Operation, applyPatch } from 'fast-json-patch';
 import { NotFoundException } from '@nestjs/common';
 import { CreateBlogPostModel } from '../../models/viewmodel/create-blog-post-model';
 import { GetBlogPostModel } from '../../models/viewmodel/get-blog-post-model';
@@ -38,13 +38,15 @@ export class BlogPostService {
 
     async getBlogPostById(blogPostId: string): Promise<GetBlogPostModel> {
         if (blogPostId === 'existing-blog-post') {
-            const result = new GetBlogPostModel()
-            result.id = 'existing-blog-post';
-            result.title = 'Expected Title';
-            result.content = 'Expected content';
-            return Promise.resolve(result);
+          const result = new GetBlogPostModel({
+            id: 'existing-blog-post',
+            title: 'Expected Title',
+            content: 'Expected content',
+          });
+
+          return Promise.resolve(result);
         } else {
-            throw new NotFoundException();
+          throw new NotFoundException();
         }
     }
 
@@ -52,7 +54,19 @@ export class BlogPostService {
         blogPostId: string,
         operations: Operation[],
     ): Promise<GetBlogPostModel> {
-        return new GetBlogPostModel();
+        if (blogPostId === 'existing-blog-post') {
+            const result = new GetBlogPostModel({
+                id: 'existing-blog-post',
+                title: 'Expected Title',
+                content: 'Expected content',
+            });
+
+            applyPatch(result, operations);
+
+            return Promise.resolve(result);
+        } else {
+          throw new NotFoundException();
+        }
     }
 
     async deleteBlogPostById(blogPostId: string) {
