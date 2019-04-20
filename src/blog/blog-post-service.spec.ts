@@ -5,17 +5,29 @@ import { DatabaseService } from '../shared/database-service';
 jest.mock('../shared/database-service.ts');
 
 describe('BlogPostService', () => {
-  let provider: BlogPostService;
+  let blogPostService: BlogPostService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [BlogPostService, DatabaseService],
     }).compile();
 
-    provider = module.get<BlogPostService>(BlogPostService);
+    blogPostService = module.get<BlogPostService>(BlogPostService);
   });
 
   it('should be defined', () => {
-    expect(provider).toBeDefined();
+    expect(blogPostService).toBeDefined();
   });
+
+  // describe('getBlogPosts', () => {
+
+  // });
+
+  // describe('createBlogPost', () => {});
+
+  // describe('getBlogPostById', () => {});
+
+  // describe('updateBlogPostByIdPatch', () => {});
+
+  // describe('deleteBlogPostById', () => {});
 });

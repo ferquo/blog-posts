@@ -27,11 +27,7 @@ export class DatabaseService {
     }
   }
 
-  async get() {
-    return { message: 'Hello World!' };
-  }
-
-  async add(collection: any, record: any) {
+  async add(collection: any, record: any): Promise<any> {
     this.assertConnection();
 
     return await this.connection.getMongoRepository(collection).save(record);
@@ -70,7 +66,7 @@ export class DatabaseService {
     return this.connection.getMongoRepository(collection).find(options);
   }
 
-  async getOneByID(collection: any, id: ObjectId | string) {
+  async getOneByID(collection: any, id: ObjectId | string): Promise<{}> {
     this.assertConnection();
 
     if (typeof id === 'string') {
@@ -141,10 +137,12 @@ export class DatabaseService {
     return this.connection.getMongoRepository(collection).find(options);
   }
 
-  async getTotal(collection: any) {
+  async getTotal(collection: any): Promise<number> {
     this.assertConnection();
 
-    return this.connection.getMongoRepository(collection).count({ deleted: false });
+    return this.connection
+      .getMongoRepository(collection)
+      .count({ deleted: false });
   }
 
   async updateById(collection: any, id: ObjectId, record: any): Promise<any> {

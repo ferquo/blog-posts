@@ -86,7 +86,7 @@ export class BlogPostService {
 
     async deleteBlogPostById(blogPostId: string) {
         if (blogPostId === 'existing-blog-post') {
-            Promise.resolve({});
+            return Promise.resolve({});
         } else {
             throw new RecordNotFoundException();
         }
