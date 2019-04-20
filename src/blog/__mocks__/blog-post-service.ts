@@ -55,17 +55,32 @@ export class BlogPostService {
         operations: Operation[],
     ): Promise<GetBlogPostModel> {
         if (blogPostId === 'existing-blog-post') {
-            const result = new GetBlogPostModel({
-                id: 'existing-blog-post',
-                title: 'Expected Title',
-                content: 'Expected content',
+            const blogPost = new BlogPostModel({
+              _id: 'existing-blog-post',
+              title: 'Expected Title',
+              content: 'Expected content',
+              createdOnDate: new Date(),
+              updatedOnDate: new Date(),
+              deleted: false,
             });
 
-            applyPatch(result, operations);
+            applyPatch(blogPost, operations);
+
+            // validate
+            const errors = await validate(blogPost);
+            if (errors && errors.length > 0) {
+              throw new ValidationErrorException();
+            }
+
+            const result = new GetBlogPostModel({
+              id: blogPost._id,
+              title: blogPost.title,
+              content: blogPost.content,
+            });
 
             return Promise.resolve(result);
         } else {
-          throw new NotFoundException();
+          throw new RecordNotFoundException();
         }
     }
 

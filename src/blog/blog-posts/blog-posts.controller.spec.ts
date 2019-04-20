@@ -162,5 +162,65 @@ describe('BlogPosts Controller', () =>
       expect(res.json).toHaveBeenCalled();
       expect(res.json).toBeCalledWith(expectedResult);
     });
+
+    it('should NOT update a blog post, when title is too short', async () => {
+      const blogPostId = 'existing-blog-post';
+      const updateOperations: Operation[] = [
+        { op: 'replace', path: '/title', value: '1' },
+      ];
+
+      const res = mockResponse();
+
+      expect(
+        controller.updateBlogPostByIdPatch(
+          res,
+          blogPostId,
+          updateOperations,
+        ),
+      ).rejects.toThrowError(ValidationErrorException);
+
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
+
+    it('should NOT update a blog post, when content is too short', async () => {
+      const blogPostId = 'existing-blog-post';
+      const updateOperations: Operation[] = [
+        { op: 'replace', path: '/content', value: 'short' },
+      ];
+
+      const res = mockResponse();
+
+      expect(
+        controller.updateBlogPostByIdPatch(
+          res,
+          blogPostId,
+          updateOperations,
+        ),
+      ).rejects.toThrowError(ValidationErrorException);
+
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
+
+    it('should NOT update a blog post, when an invalid id is passed', async () => {
+      const blogPostId = 'invalid-blog-post';
+      const updateOperations: Operation[] = [
+        { op: 'replace', path: '/content', value: 'short' },
+      ];
+
+      const res = mockResponse();
+
+      expect(
+        controller.updateBlogPostByIdPatch(
+          res,
+          blogPostId,
+          updateOperations,
+        ),
+      ).rejects.toThrowError(RecordNotFoundException);
+
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
   });
 });
