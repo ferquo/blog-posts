@@ -29,72 +29,76 @@ describe('BlogPosts Controller', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should get an existing blog post', async () => {
-    const expectedResult = new GetBlogPostModel({
-      id: 'existing-blog-post',
-      title: 'Expected Title',
-      content: 'Expected content',
+  describe('GET getBlogPostById', () => {
+    it('should get an existing blog post', async () => {
+      const expectedResult = new GetBlogPostModel({
+        id: 'existing-blog-post',
+        title: 'Expected Title',
+        content: 'Expected content',
+      });
+      const res = mockResponse();
+
+      await controller.getBlogPostById(res, 'existing-blog-post', headers);
+
+      expect(res.json).toHaveBeenCalled();
+      expect(res.json).toBeCalledWith(expectedResult);
     });
-    const res = mockResponse();
 
-    await controller.getBlogPostById(res, 'existing-blog-post', headers);
+    it('should fail on requesting an unexisting blog post', async () => {
+      const res = mockResponse();
 
-    expect(res.json).toHaveBeenCalled();
-    expect(res.json).toBeCalledWith(expectedResult);
+      expect(
+        controller.getBlogPostById(res, 'not-existing-blog-post', headers),
+      ).rejects.toThrowError(NotFoundException);
+    });
   });
 
-  it('should fail on requesting an unexisting blog post', async () => {
-    const res = mockResponse();
+  describe('POST createBlogPost', () => {
+    it('should create a blog post', async () => {
+      const newBlogPost = new CreateBlogPostModel({
+        title: 'New title',
+        content: 'New Content',
+      });
+      const expectedResult = new GetBlogPostModel({
+        id: 'new_id',
+        title: 'New title',
+        content: 'New Content',
+      });
 
-    expect(
-      controller.getBlogPostById(res, 'not-existing-blog-post', headers),
-    ).rejects.toThrowError(NotFoundException);
-  });
+      const res = mockResponse();
 
-  it('should create a blog post', async () => {
-    const newBlogPost = new CreateBlogPostModel({
-      title: 'New title',
-      content: 'New Content',
-    });
-    const expectedResult = new GetBlogPostModel({
-      id: 'new_id',
-      title: 'New title',
-      content: 'New Content',
-    });
+      await controller.createBlogPost(res, newBlogPost);
 
-    const res = mockResponse();
-
-    await controller.createBlogPost(res, newBlogPost);
-
-    expect(res.json).toHaveBeenCalled();
-    expect(res.json).toBeCalledWith(expectedResult);
-  });
-
-  it('should not create a blog post, when title is not specified', async () => {
-    const newBlogPost = new CreateBlogPostModel({
-      content: 'New Content',
+      expect(res.json).toHaveBeenCalled();
+      expect(res.json).toBeCalledWith(expectedResult);
     });
 
-    const res = mockResponse();
+    it('should not create a blog post, when title is not specified', async () => {
+      const newBlogPost = new CreateBlogPostModel({
+        content: 'New Content',
+      });
 
-    expect(
-      controller.createBlogPost(res, newBlogPost),
-    ).rejects.toThrowError(ValidationErrorException);
+      const res = mockResponse();
 
-    expect(res.json).not.toHaveBeenCalled();
-  });
+      expect(controller.createBlogPost(res, newBlogPost)).rejects.toThrowError(
+        ValidationErrorException,
+      );
 
-  it('should not create a blog post, when content is not specified', async () => {
-    const newBlogPost = new CreateBlogPostModel({
-      title: 'New title',
+      expect(res.json).not.toHaveBeenCalled();
     });
 
-    const res = mockResponse();
+    it('should not create a blog post, when content is not specified', async () => {
+      const newBlogPost = new CreateBlogPostModel({
+        title: 'New title',
+      });
 
-    expect(controller.createBlogPost(res, newBlogPost)).rejects.toThrowError(
-      ValidationErrorException,
-    );
+      const res = mockResponse();
 
-    expect(res.json).not.toHaveBeenCalled();
+      expect(controller.createBlogPost(res, newBlogPost)).rejects.toThrowError(
+        ValidationErrorException,
+      );
+
+      expect(res.json).not.toHaveBeenCalled();
+    });
   });
 });
