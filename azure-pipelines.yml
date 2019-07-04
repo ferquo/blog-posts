@@ -24,3 +24,7 @@ steps:
 - script: |
     npm run test
   displayName: 'run unit tests'
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: '/coverage/clover.xml'
