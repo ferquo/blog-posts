@@ -17,5 +17,10 @@ steps:
 
 - script: |
     npm install
-    npm run build
+    npm install typescript -g
+    tsc
   displayName: 'npm install and build'
+
+- script: |
+    npm run test
+  displayName: 'run unit tests'
