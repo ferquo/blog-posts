@@ -24,7 +24,11 @@ steps:
 - script: |
     npm run test
   displayName: 'run unit tests'
+
+- script: |
+    echo 'Build informations: $(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)'
+
 - task: PublishCodeCoverageResults@1
   inputs:
-    codeCoverageTool: 'JaCoCo'
+    codeCoverageTool: JaCoCo
     summaryFileLocation: '/coverage/clover.xml'
