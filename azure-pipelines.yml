@@ -29,7 +29,13 @@ steps:
     echo 'Build informations: $(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)'
   displayName: 'Build informations'
 
-- task: PublishCodeCoverageResults@1
+- task: CopyFiles@2
+  displayName:
   inputs:
-    codeCoverageTool: JaCoCo
-    summaryFileLocation: '/coverage/clover.xml'
+    contents: 'coverage/**'
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: CoverageReport
