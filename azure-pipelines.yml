@@ -27,6 +27,7 @@ steps:
 
 - script: |
     echo 'Build informations: $(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)'
+  displayName: 'Build informations'
 
 - task: PublishCodeCoverageResults@1
   inputs:
