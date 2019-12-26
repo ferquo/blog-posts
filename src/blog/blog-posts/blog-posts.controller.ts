@@ -16,6 +16,8 @@ export class BlogPostsController {
     @Headers() headers: any,
   ) {
     const response = await this.blogPostService.getBlogPosts(query, headers);
+    // tslint:disable-next-line: no-console
+    console.info('GET blog posts endpoint hit');
     const responseStatusCode =
       response.blogPosts.length > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT;
     res.set('x-total-count', `${response.total}`).status(responseStatusCode).json(response);

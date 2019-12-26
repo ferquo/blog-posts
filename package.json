@@ -22,6 +22,7 @@
   "dependencies": {
     "@nestjs/common": "^5.4.0",
     "@nestjs/core": "^5.4.0",
+    "applicationinsights": "^1.6.0",
     "class-validator": "^0.9.1",
     "fast-json-patch": "^2.0.7",
     "jest-mock-express": "^0.1.1",

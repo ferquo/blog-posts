@@ -39,3 +39,7 @@ steps:
   inputs:
     pathToPublish: $(Build.ArtifactStagingDirectory)
     artifactName: CoverageReport
+
+- task: PowerShell@2
+  inputs:
+    filePath: './powershell-poc.ps1'
