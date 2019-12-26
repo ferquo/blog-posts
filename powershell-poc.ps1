@@ -1,2 +1,1 @@
-Get-ChildItem $env
-Write-Output "The password from Azure KeyVault is: " $env:MONGO-DB-PASSWORD
+Write-Host ("The password from Azure KeyVault is: " + $env:MONGO_DB_PASSWORD)
