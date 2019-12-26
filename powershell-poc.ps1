@@ -1,1 +1,1 @@
-Write-Output "The password from Azure KeyVault is: " $env:mongo-db-password
+Write-Output "The password from Azure KeyVault is: " $env:MONGO-DB-PASSWORD
