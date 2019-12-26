@@ -43,6 +43,12 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)
     artifactName: CoverageReport
 
+- task: AzureKeyVault@1
+  inputs:
+    azureSubscription: 'Pay-As-You-Go (478a713b-334d-4d58-b9f4-34839c5a7530)'
+    KeyVaultName: 'AZPFKeyVaultLearning'
+    SecretsFilter: '*'
+
 - task: PowerShell@2
   inputs:
     filePath: './powershell-poc.ps1'
