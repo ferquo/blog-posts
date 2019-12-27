@@ -13,6 +13,8 @@ variables:
 - group: 'KeyVaultPasswords'
 
 steps:
+- bash: echo $(mongo-db-password)
+
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'
